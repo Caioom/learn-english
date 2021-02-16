@@ -25,9 +25,14 @@ class DatabaseConfiguration {
     fun dataSource(): DataSource {
         val dataSourceBuilder = DataSourceBuilder.create()
         dataSourceBuilder.driverClassName(this.driver)
-        dataSourceBuilder.url(this.url)
+        dataSourceBuilder.url(this.prepareUrl())
         dataSourceBuilder.username(this.username)
         dataSourceBuilder.password(this.password)
         return dataSourceBuilder.build()
+    }
+
+    private fun prepareUrl(): String {
+        val url = this.url.split("postgres:")
+        return "jdbc:postgresql:${url[1]}"
     }
 }
