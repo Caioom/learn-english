@@ -1,9 +1,10 @@
 language: java
 jdk:
-  - openjdk11
+- openjdk11
 before_install:
-  - chmod +x mvnw
-deploy: 
+- chmod +x mvnw
+deploy:
   provider: heroku
-  api_key: 
+  api_key:
+    secure: Vaw0sY1hOkVFN0d88z45BWSMe9N0UUr3sNs6lPbvnIgF8XaRJKB6Th8+ifKWGHCJcNwHVJmRWWyJJr6R377tj5Q7VejuOCED9ZzOVBKCOFIVSdAHoif9l52Za1L0/RwPN2Jz0TzWCIYKvNY5FRMknALGhuG3e2BKzAd8tHjH3FeQ+8n4AyqNObYkUAqrPvoremTO7k9/3wPQG7wDk3OgHyDwcCPEv0fHK3jX4iFkBe+IPsgCPW8z+wYMkhC9e8tqCXLj4c/ibt3pgEnnKU1nyz8y71Qm/MgTHdsCpRx7ZYbt/Ei9YGejysO/EvoFb+zqCzH660rImSYY1fvpjYPYTz9CQdAWfYmTRlwU0OCf/q4RokAViYsUke9WO7LCSfQEMp/BCq32x1awfzrY3l9a12p8wP4gn5kWK0JO7tJvUYiAdHuDei/F/C/1D5N6gX+HkpSr3e3VMd2mKM2o4ORUGyDGSdToFwrE/MW7ehui8RElAacbANeuSHEtgkCL8ULMU8uzHj9hfx0dUKW+EehiwgM0eObtEC8rTKW43b2YYrcenOAiQnkxSKC6yjg5cDCXUICai4ziOIebx2w0UgBeOnlnfqdMCWsW4w9a9VdgktShTcGJ3b4GMH2GVOHgOAQMuna/1CdI5wc9/bb4GyiOOZ2b2H5HxUIJRv5gTCdLxQ4=
   app: learning-english-mvp
