@@ -13,4 +13,14 @@ class VerbMapper {
        verbEntity.translation = verbDto.translation
        return verbEntity
     }
+
+    fun toVerbDto(verbEntity: VerbEntity): VerbDTO {
+        val verbDto = VerbDTO()
+        verbDto.id = verbEntity.id
+        verbDto.imperative = verbEntity.imperative
+        verbDto.simplePast = verbEntity.simplePast
+        verbDto.pastParticiple = verbEntity.pastParticiple
+        verbDto.translation = verbEntity.translation
+        return verbDto
+    }
 }

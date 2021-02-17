@@ -6,14 +6,12 @@ import com.caio.englishlearn.domain.service.VerbService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
 @RequestMapping("/v1/verbs")
+@CrossOrigin
 class VerbsController {
     @Autowired
     private lateinit var verbService: VerbService
@@ -29,6 +27,14 @@ class VerbsController {
 
         this.verbService.save(verbDTO)
         return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @GetMapping
+    fun getAllVerbs(): ResponseEntity<ResponseDTO<Any>> {
+        val allVerbs = this.verbService.findAll()
+        val response = ResponseDTO<Any>()
+        response.data = allVerbs
+        return ResponseEntity.ok(response)
     }
 
     fun validateErrors(verbDto: VerbDTO): ArrayList<String?> {

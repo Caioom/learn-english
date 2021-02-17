@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -20,21 +21,30 @@ class VerbServiceImplTest {
     @MockK
     private lateinit var verbRepository: VerbRepository
 
+    private val verbEntity = VerbEntity(id = 1, imperative = "be",
+            simplePast = "was/were", pastParticiple = "been", translation = "ser/estar")
+
+    private val verbDto = VerbDTO(id = 1, imperative = "be",
+            simplePast = "was/were", pastParticiple = "been", translation = "ser/estar")
+
     @BeforeEach
     fun setUp() = MockKAnnotations.init(this)
 
     @Test
     fun `should save new verb in three tenses`() {
-        val verbEntity = VerbEntity(id = 1, imperative = "be",
-            simplePast = "was/were", pastParticiple = "been", translation = "ser/estar")
-        val verbDto = VerbDTO(id = 1, imperative = "be",
-            simplePast = "was/were", pastParticiple = "been", translation = "ser/estar")
+        every { verbRepository.save(verbEntity) } returns this.verbEntity
 
-        every { verbRepository.save(verbEntity) } returns verbEntity
-
-        this.verbService.save(verbDto)
+        this.verbService.save(this.verbDto)
 
         verify { verbRepository.save(verbEntity) }
         confirmVerified(verbRepository)
+    }
+
+    @Test
+    fun `should return all verbs of database`() {
+        every { verbRepository.findAll() } returns listOf(this.verbEntity)
+
+        val allVerbs: List<Any> = this.verbService.findAll()
+        Assertions.assertThat(allVerbs).isEqualTo(listOf(this.verbDto))
     }
 }
