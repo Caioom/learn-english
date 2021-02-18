@@ -2,6 +2,7 @@ package com.caio.englishlearn.delivery.controllers
 
 import com.caio.englishlearn.delivery.dtos.ResponseDTO
 import com.caio.englishlearn.delivery.dtos.VerbDTO
+import com.caio.englishlearn.domain.VerbException
 import com.caio.englishlearn.domain.service.VerbService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -19,14 +20,24 @@ class VerbsController {
     @PostMapping
     fun createNewVerb(@RequestBody verbDTO: VerbDTO): ResponseEntity<Any> {
         val errors = this.validateErrors(verbDTO)
-        if(errors.isNotEmpty()) {
-            val response = ResponseDTO<Void>()
-            response.errors = errors
-            return ResponseEntity.badRequest().body(response)
-        }
+        if(errors.isNotEmpty()) return this.returnErrors(errors)
+        return this.registerNewVerb(verbDTO, ResponseDTO())
+    }
 
-        this.verbService.save(verbDTO)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+    private fun returnErrors(errors: ArrayList<String?>): ResponseEntity<Any> {
+        val response = ResponseDTO<Void>()
+        response.errors = errors
+        return ResponseEntity.badRequest().body(response)
+    }
+
+    private fun registerNewVerb(verbDTO: VerbDTO, response: ResponseDTO<Void>): ResponseEntity<Any> {
+        return try {
+            this.verbService.save(verbDTO)
+            ResponseEntity.status(HttpStatus.CREATED).build()
+        } catch (e: VerbException) {
+            response.errors.add(e.message)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response)
+        }
     }
 
     @GetMapping

@@ -1,6 +1,7 @@
 package com.caio.englishlearn.domain.service
 
 import com.caio.englishlearn.delivery.dtos.VerbDTO
+import com.caio.englishlearn.domain.VerbException
 import com.caio.englishlearn.domain.mappers.VerbMapper
 import com.caio.englishlearn.integration.entities.VerbEntity
 import com.caio.englishlearn.integration.repositories.VerbRepository
@@ -17,7 +18,14 @@ class VerbServiceImpl : VerbService {
 
     override fun save(verbDto: VerbDTO) {
         val verbEntity: VerbEntity = this.verbMapper.toVerbEntity(verbDto)
+        this.verifyIfVerbExists(verbEntity)
         this.verbRepository.save(verbEntity)
+    }
+
+    private fun verifyIfVerbExists(verb: VerbEntity) {
+        this.verbRepository
+                .findByImperative(verb.imperative)
+                .ifPresent{throw VerbException("This verb already exists")}
     }
 
     override fun findAll(): List<VerbDTO> {

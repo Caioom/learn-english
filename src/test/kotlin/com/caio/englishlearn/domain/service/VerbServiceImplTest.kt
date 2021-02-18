@@ -1,6 +1,7 @@
 package com.caio.englishlearn.domain.service
 
 import com.caio.englishlearn.delivery.dtos.VerbDTO
+import com.caio.englishlearn.domain.VerbException
 import com.caio.englishlearn.integration.entities.VerbEntity
 import com.caio.englishlearn.integration.repositories.VerbRepository
 import io.mockk.MockKAnnotations
@@ -12,6 +13,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class VerbServiceImplTest {
 
@@ -33,10 +35,12 @@ class VerbServiceImplTest {
     @Test
     fun `should save new verb in three tenses`() {
         every { verbRepository.save(verbEntity) } returns this.verbEntity
+        every { verbRepository.findByImperative(verbEntity.imperative) } returns (Optional.empty())
 
         this.verbService.save(this.verbDto)
 
         verify { verbRepository.save(verbEntity) }
+        verify { verbRepository.findByImperative(verbEntity.imperative) }
         confirmVerified(verbRepository)
     }
 
@@ -46,5 +50,16 @@ class VerbServiceImplTest {
 
         val allVerbs: List<Any> = this.verbService.findAll()
         Assertions.assertThat(allVerbs).isEqualTo(listOf(this.verbDto))
+    }
+
+    @Test
+    fun `should not create existent verbs`() {
+        every { verbRepository.findByImperative(verbEntity.imperative) } returns (Optional.of(this.verbEntity))
+
+        try {
+            this.verbService.save(this.verbDto)
+        } catch(e: VerbException) {
+            Assertions.assertThat(e.message).isEqualTo("This verb already exists")
+        }
     }
 }
